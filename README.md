@@ -7,5 +7,5 @@ A simple CLI for uploading files to anonfiles.com
 - [x] Upload file to an account
 - [ ] Download file
 - [x] Built-in file explorer
-- [ ] Compress folder to a file so that AnonFiles will upload whole folder as one
+- [x] Compress folder into a file so that AnonFiles would upload whole folder as one
 - [ ] Save login info
