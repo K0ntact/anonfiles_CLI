@@ -1,4 +1,3 @@
-import json
 import os
 import requests
 import shutil
@@ -91,7 +90,7 @@ def main():
 
                 if result.status_code == 200:
                     print("File uploaded successfully!")
-                    link = json.loads(result.text)["data"]["file"]["url"]["short"]
+                    link = result.json()["data"]["file"]["url"]["short"]
                     print(f"Link: {link}\n")
                     print(f"{BCOLORS.RED}Save the link now or it will be lost forever!{BCOLORS.ENDC}")
 
@@ -100,7 +99,11 @@ def main():
                         os.remove(path)
 
                 else:
-                    print(f"{BCOLORS.RED}Error uploading file{BCOLORS.ENDC}")
+                    error_code = result.json()["error"]["code"]
+                    error_type = result.json()["error"]["type"]
+                    error_message = result.json()["error"]["message"]
+                    print(f"{BCOLORS.RED}Code {error_code}: {error_type}{BCOLORS.ENDC}")
+                    print(f"{BCOLORS.RED}{error_message}{BCOLORS.ENDC}")
 
             case 2:
                 API_KEY = input("Enter your account API key (Login then check API tab at the bottom of the page):\n")
@@ -114,7 +117,7 @@ def main():
 
                 if result.status_code == 200:
                     print("File uploaded successfully!")
-                    link = json.loads(result.text)["data"]["file"]["url"]["short"]
+                    link = result.json()["data"]["file"]["url"]["short"]
                     print(f"Link: {link}\n")
                     print(f"{BCOLORS.YELLOW}The file is now uploaded to your account{BCOLORS.ENDC}")
 
@@ -123,7 +126,11 @@ def main():
                         os.remove(path)
 
                 else:
-                    print("Error uploading file")
+                    error_code = result.json()["error"]["code"]
+                    error_type = result.json()["error"]["type"]
+                    error_message = result.json()["error"]["message"]
+                    print(f"{BCOLORS.RED}Code {error_code}: {error_type}{BCOLORS.ENDC}")
+                    print(f"{BCOLORS.RED}{error_message}{BCOLORS.ENDC}")
 
 
 if __name__ == '__main__':
