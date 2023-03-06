@@ -51,6 +51,7 @@ def file_explorer() -> tuple[str, str, bool]:
             current_path = os.path.dirname(current_path)
 
         elif int(index) in range(1, len(files) + 1):
+            # Anon Files can't upload a directory as a whole, only its files
             if os.path.isdir(current_path + "/" + files[int(index)-1]):
                 current_path = current_path + "/" + files[int(index)-1]
             else:
@@ -116,6 +117,11 @@ def main():
                     link = json.loads(result.text)["data"]["file"]["url"]["short"]
                     print(f"Link: {link}\n")
                     print(f"{BCOLORS.YELLOW}The file is now uploaded to your account{BCOLORS.ENDC}")
+
+                    # if the uploaded file is a compressed directory, remove it from local after uploading
+                    if isDir:
+                        os.remove(path)
+
                 else:
                     print("Error uploading file")
 
