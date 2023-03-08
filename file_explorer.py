@@ -1,9 +1,9 @@
 from colors import *
-import os, shutil
+import os
 
-def file_explorer() -> tuple[str, str, bool]:
+def file_explorer() -> tuple[str, str]:
     '''
-    Returns file/directory name, the path and whether if it is a compressed directory
+    Returns file/directory name and the path
     '''
 
     current_path = (os.getcwd()).replace("\\", "/")  # this returns path in \, but we need path in /
@@ -32,11 +32,10 @@ def file_explorer() -> tuple[str, str, bool]:
 
         if index == ".":
             folder_name = os.path.basename(current_path)
-            compressed_path = shutil.make_archive(current_path, "zip", current_path)
-            return folder_name, compressed_path, True
+            return folder_name, current_path
 
         if index == "x":
-            return "", "", False
+            return "", ""
 
         if int(index) == 0:
             current_path = os.path.dirname(current_path)
@@ -46,7 +45,7 @@ def file_explorer() -> tuple[str, str, bool]:
             if os.path.isdir(current_path + "/" + files[int(index)-1]):
                 current_path = current_path + "/" + files[int(index)-1]
             else:
-                return files[int(index)-1], current_path+"/"+files[int(index)-1], False
+                return files[int(index)-1], current_path+"/"+files[int(index)-1]
 
         else:
             print(f"{BCOLORS.RED}Invalid choice, please try again!{BCOLORS.ENDC}")
