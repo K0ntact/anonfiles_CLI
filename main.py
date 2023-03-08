@@ -5,7 +5,7 @@ from file_explorer import *
 
 
 class SESSION:
-    ID = "eyJpdiI6IkZsYU95RGg4RFA0Mnd6eXgyRVJEa0E9PSIsInZhbHVlIjoiTlY0cjA2a0VlNWZnQWc2YkQyNlBZOTFRM2JBb0hBSmt3STNIZzEwdVZxbWRxd3FnVlVmdWdYb3h3Zk92VVZlNCIsIm1hYyI6Ijk1MDUzZWRjYmIyMGM3NzkzY2YwNjQyZTM1YmZjYWE4NzJkYTFlOWYzZjIxMjU2MGZiYTg5YTlhYjMxNTA4YjcifQ%3D%3D"
+    ID = "eyJpdiI6IkJ5aU9EMFRZS0c0Zjg5TmZCV3g5SGc9PSIsInZhbHVlIjoiczl6bTlJU2JwT3hSa1VQdzAzODBHeHJQWEVOcVRucktCWHErdHM5eG9VdE9TNmNERkdCNGNDVUdDSTBramhBaiIsIm1hYyI6Ijg0OGU5MDc2NGMxYTI0ZjY3ZTE1YWQ4Y2FhYmJiY2I0Y2IxYjBjNTUwZGQwM2QzZGI2OTAzZmFhYzQ4MDIzZDgifQ"
     COOKIE = {'USERSESSID': ID}
 
 
@@ -28,7 +28,7 @@ def main():
         print("-"*20)
         print(f"[{BCOLORS.YELLOW}1{BCOLORS.ENDC}] Upload anonymously")
         print(f"[{BCOLORS.YELLOW}2{BCOLORS.ENDC}] Upload to account")
-        # print(f"[{BCOLORS.YELLOW}3{BCOLORS.ENDC}] Download from account")
+        print(f"[{BCOLORS.YELLOW}3{BCOLORS.ENDC}] Download from account")
         print("-" * 20)
         print(f"[{BCOLORS.YELLOW}0{BCOLORS.ENDC}] Exit")
         choice = int(input("Your choice: "))
@@ -54,7 +54,7 @@ def main():
 
                 result = requests.post(
                     API.UPLOAD,
-                    files = {"file": open(path, "rb")}
+                    files={"file": open(path, "rb")}
                 )
 
                 if result.status_code == 200:
@@ -107,32 +107,49 @@ def main():
                     print(f"{BCOLORS.RED}Code {error_code}: {error_type}{BCOLORS.ENDC}")
                     print(f"{BCOLORS.RED}{error_message}{BCOLORS.ENDC}")
 
-            # case 3:
-            #     cookie = input("Enter your cookie (Please check README.md for more info):\n")
-            #     r = requests.get(API.MAIN, cookies=cookie)
-            #
-            #     soup = BeautifulSoup(r.content, 'html.parser')
-            #     file_name = soup.find_all("div", class_="upload-filename")
-            #     pg_link = soup.find_all("input", class_="form-control upload-file-input")
-            #
-            #     no_files = len(file_name)
-            #
-            #     for index in range(0, no_files):
-            #         print("[{}{}{}] {}",
-            #                 BCOLORS.YELLOW,
-            #                 index + 1,
-            #                 BCOLORS.ENDC,
-            #                 file_name[index]
-            #               )
-            #     print("-" * 20)
-            #     print(f"{BCOLORS.RED}[x] Exit the program{BCOLORS.ENDC}")
-            #     choice = input("Your choice: ")
-            #
-            #     if choice == "x":
-            #         break
-            #
-            #     if int(choice) in range(1, no_files + 1):
-            #         dl_link = download_extractor(pg_link[int(choice)-1])
+            case 3:
+                # cookie = input("Enter your cookie (Please check README.md for more info):\n")
+                r = requests.get('https://anonfiles.com', cookies=SESSION.COOKIE)
+
+                soup = BeautifulSoup(r.content, 'html.parser')
+                file_name = soup.find_all("div", class_="upload-filename")
+                pg_link = soup.find_all("input", class_="form-control upload-file-input")
+
+                save_path = (os.getcwd()).replace("\\", "/")
+                while True:
+                    print(f"\nSave file at: {save_path}")
+                    print("-" * 20)
+                    no_files = len(file_name)
+                    for index in range(0, no_files):
+                        print("[{}{}{}] {}".format(
+                                BCOLORS.YELLOW,
+                                index + 1,
+                                BCOLORS.ENDC,
+                                file_name[index].text.strip()
+                              )
+                        )
+                    print("-" * 20)
+                    print(f"[{BCOLORS.YELLOW}.{BCOLORS.ENDC}] Change save path")
+                    print(f"[{BCOLORS.YELLOW}x{BCOLORS.ENDC}] Back")
+                    choice = input("Your choice: ")
+
+                    if choice == "x":
+                        break
+
+                    elif choice == ".":
+                        name, path = file_explorer()
+                        save_path = path
+
+                    elif int(choice) in range(1, no_files + 1):
+                        dl_link = download_extractor(pg_link[int(choice)-1]['value'])
+
+                        save = save_path + f"/{file_name[int(choice)-1].text.strip()}"
+                        with requests.get(dl_link, stream=True) as r:
+                            with open(save, "wb") as f:
+                                for chunk in r.iter_content(1024*1024*2):
+                                    print("Downloading...")
+                                    f.write(chunk)
+                        print("Download completed")
 
 if __name__ == '__main__':
     main()

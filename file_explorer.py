@@ -26,7 +26,7 @@ def file_explorer() -> tuple[str, str]:
                       f"{BCOLORS.BLUE}{file}{BCOLORS.ENDC}")
         print("-" * 20)
         print(f"[{BCOLORS.YELLOW}0{BCOLORS.ENDC}] Go back")
-        print(f"[{BCOLORS.YELLOW}.{BCOLORS.ENDC}] Upload current directory")
+        print(f"[{BCOLORS.YELLOW}.{BCOLORS.ENDC}] Choose current directory")
         print(f"{BCOLORS.RED}[x]{BCOLORS.ENDC} Exit program")
         index = input("Your choice: ")
 
